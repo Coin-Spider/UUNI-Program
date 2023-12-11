@@ -1,0 +1,16 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/not_forget?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+    username: root
+    password: winhulin
+    tomcat:
+      max-active: 1024
+    dbcp2:
+      min-idle: 512
+mybatis:
+  mapper-locations: classpath:Mapper/*Mapper.xml
+  type-aliases-package: com.uuni.do_not_forget.Pojo
+
