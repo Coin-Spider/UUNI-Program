@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.uuni.do_not_forget.Mapper.UserMapper">
+    <insert id="registered" parameterType="user">
+        <selectKey resultType="int" keyProperty="count" order="BEFORE">
+            select count(*) from user where userName=#{userName}
+        </selectKey>
+        <if test="count>0">
+            THROW SQLSTATE '45000'
+        </if>
+        <if test="count==0">
+            insert into user (userName,userPass)
+            values (#{userName},#{userPass});
+        </if>
+    </insert>
+
+    <select id="login" parameterType="user" resultType="user">
+        select userId, userName, userPass
+        from user where userPass=#{userPass} and userName=#{userName};
+    </select>
 </mapper>
