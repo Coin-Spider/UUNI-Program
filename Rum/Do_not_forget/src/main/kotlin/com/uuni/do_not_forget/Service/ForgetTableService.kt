@@ -9,4 +9,8 @@ interface ForgetTableService {
      * 添加备忘录
      */
     fun addForget(forgetTable: ForgetTable)
+    /**
+     * 查看备忘录
+     */
+    fun searchForgetTable(userId:Int):List<ForgetTable>
 }

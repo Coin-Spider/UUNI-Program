@@ -16,4 +16,8 @@ class ForgetTableServiceImpl:ForgetTableService {
     override fun addForget(forgetTable: ForgetTable) {
         forgetTableMapper.addForgetTable(forgetTable)
     }
+
+    override fun searchForgetTable(userId: Int):List<ForgetTable> {
+        return forgetTableMapper.searchForgetTable(userId)
+    }
 }

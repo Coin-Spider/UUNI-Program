@@ -7,6 +7,7 @@ import com.uuni.do_not_forget.Service.ForgetTableService
 import com.uuni.do_not_forget.Service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,16 +20,14 @@ class UserController {
     @Autowired lateinit var forgetTableService:ForgetTableService
     @Autowired lateinit var userService:UserService
 
-    @GetMapping("/Hi")
-    fun sayHello():Request{
-        return Request(1,"hello")
-    }
-
     /**
      * 注册
      */
     @PostMapping("/Registered")
     fun registered(@RequestBody user: User):Request{
+        if (user.userName==null){
+            return Request(0,"ERROR")
+        }
         if(!userService.registered(user)){
             return Request(0,"ERROR")
         }
@@ -37,7 +36,7 @@ class UserController {
     /**
      * 登录
      */
-    @GetMapping("/Login")
+    @PostMapping("/Login")
     fun login(@RequestBody user: User):Request{
         val user2= userService.login(user)
         val map= HashMap<String,Any>()
@@ -45,9 +44,29 @@ class UserController {
         map["user"] = user2
         return Request(1,map)
     }
-    @PostMapping("/Add")
-    fun addForget(@RequestBody forgetTable: ForgetTable){
-        forgetTableService.addForget(forgetTable);
-    }
 
+    /**
+     * 添加备忘录
+     */
+    @PostMapping("/Add")
+    fun addForget(@RequestBody forgetTable: ForgetTable):Request{
+        forgetTableService.addForget(forgetTable);
+        return Request(1,"添加成功")
+    }
+    /**
+     * 查询属于自己的备忘录(进行中)
+     */
+    @GetMapping("/ForgetTableING/{userId}")
+    fun searchForgetTableING(@PathVariable("userId") userId:Int):Request{
+        val forgetTable = forgetTableService.searchForgetTable(userId)
+        return Request(1,forgetTable)
+    }
+//    /**
+//     * 查询属于自己的备忘录(过期)
+//     */
+//    @GetMapping("/ForgetTableED/{userId}")
+//    fun searchForgetTableED(@PathVariable("userId") userId:Int):Request{
+//        val forgetTable = forgetTableService.searchForgetTable(userId)
+//        return Request(1,forgetTable)
+//    }
 }

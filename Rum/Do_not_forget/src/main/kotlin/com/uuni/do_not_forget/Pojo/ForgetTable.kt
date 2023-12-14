@@ -6,7 +6,7 @@ data class ForgetTable(
     var tableId: Int,
     var tableContent:String?=null,
     var tableFinished:Int,
-    var tableCreatetime: Timestamp,
+    var tableCreatetime: Timestamp?=null,
     var tableDeadline: Timestamp,
     var tableFiled:Int,
     var userId :Int,

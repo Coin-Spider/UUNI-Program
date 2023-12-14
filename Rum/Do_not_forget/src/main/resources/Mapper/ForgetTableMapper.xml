@@ -3,6 +3,10 @@
 <mapper namespace="com.uuni.do_not_forget.Mapper.ForgetTableMapper">
     <insert id="addForgetTable" parameterType="ForgetTable">
         insert into forget_table(tableContent, tableDeadline, userId)
-        values (#{table_content}, #{table_deadline}, #{user_id});
+        values (#{tableContent}, #{tableDeadline}, #{userId});
     </insert>
+    <select id="searchForgetTable" resultType="ForgetTable">
+        select *
+        from forget_table where userId=#{userId};
+    </select>
 </mapper>

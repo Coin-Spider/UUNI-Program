@@ -7,4 +7,5 @@ import org.apache.ibatis.annotations.Mapper
 interface ForgetTableMapper {
 
     fun addForgetTable(forgetTable: ForgetTable)
+    fun searchForgetTable(userId:Int):List<ForgetTable>
 }
