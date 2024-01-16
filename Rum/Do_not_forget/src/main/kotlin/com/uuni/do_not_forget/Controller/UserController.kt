@@ -1,10 +1,13 @@
 package com.uuni.do_not_forget.Controller
 
+import com.uuni.do_not_forget.Core.Exception.ApiException
+import com.uuni.do_not_forget.Core.Exception.ForgetException
 import com.uuni.do_not_forget.Core.Request
 import com.uuni.do_not_forget.Pojo.ForgetTable
 import com.uuni.do_not_forget.Pojo.User
 import com.uuni.do_not_forget.Service.ForgetTableService
 import com.uuni.do_not_forget.Service.UserService
+import com.uuni.do_not_forget.Utils.JWTUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -16,33 +19,44 @@ import java.util.HashMap
 
 @RestController
 @RequestMapping("/User")
+/**
+ * @folder
+ * 用户模块操作
+ */
 class UserController {
     @Autowired lateinit var forgetTableService:ForgetTableService
     @Autowired lateinit var userService:UserService
+
+    /**
+     * 鉴权测试接口
+     */
+    @RequestMapping("/Test")
+    fun test():Request{
+        return Request("1","hello")
+    }
 
     /**
      * 注册
      */
     @PostMapping("/Registered")
     fun registered(@RequestBody user: User):Request{
-        if (user.userName==null){
-            return Request(0,"ERROR")
+        if (user.userName==null||user.userName.equals("")){
+            throw ForgetException(ApiException.InfoLose.code,ApiException.InfoLose.message)
         }
-        if(!userService.registered(user)){
-            return Request(0,"ERROR")
+        if(user.userPass==null||user.userPass.equals("")){
+            throw ForgetException(ApiException.InfoLose.code,ApiException.InfoLose.message)
         }
-        return Request(1,"NICE TO MEET YOU ${user.userName}")
+        return Request("1",userService.registered(user))
     }
     /**
      * 登录
      */
     @PostMapping("/Login")
     fun login(@RequestBody user: User):Request{
-        val user2= userService.login(user)
-        val map= HashMap<String,Any>()
-        map["message"] = "WELCOME ${user2.userName}"
-        map["user"] = user2
-        return Request(1,map)
+        if ((user.userPass==null||user.userPass.equals(""))||(user.userName==null||user.userName.equals(""))){
+            throw ForgetException(ApiException.InfoLose.code,ApiException.InfoLose.message)
+        }
+        return Request("1",userService.login(user))
     }
 
     /**
@@ -51,7 +65,7 @@ class UserController {
     @PostMapping("/Add")
     fun addForget(@RequestBody forgetTable: ForgetTable):Request{
         forgetTableService.addForget(forgetTable);
-        return Request(1,"添加成功")
+        return Request("1","添加成功")
     }
     /**
      * 查询属于自己的备忘录(进行中)
@@ -59,7 +73,7 @@ class UserController {
     @GetMapping("/ForgetTableING/{userId}")
     fun searchForgetTableING(@PathVariable("userId") userId:Int):Request{
         val forgetTable = forgetTableService.searchForgetTable(userId)
-        return Request(1,forgetTable)
+        return Request("1",forgetTable)
     }
 //    /**
 //     * 查询属于自己的备忘录(过期)
